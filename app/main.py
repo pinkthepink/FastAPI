@@ -4,12 +4,12 @@ from typing import Callable
 
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 
 from app.api.api_router import api_router
 from app.core.config import settings
 from app.database.mongodb import create_indexes, lifespan
 from app.utils.error_handlers import setup_error_handlers
+from app.utils.json import JSONResponse
 
 # Configure logging
 logging.basicConfig(
@@ -23,6 +23,8 @@ app = FastAPI(
     description=settings.description,
     version=settings.version,
     lifespan=lifespan,
+    # Use our custom JSONResponse class that handles MongoDB objects
+    default_response_class=JSONResponse
 )
 
 # Setup error handlers

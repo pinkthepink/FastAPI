@@ -54,13 +54,12 @@ class ClientUpdate(BaseModel):
     address: Optional[Address] = None
     notes: Optional[str] = None
     
-    @field_validator('*')
     @classmethod
-    def check_empty_update(cls, values):
-        """Validate that at least one field is being updated."""
-        if all(v is None for v in values.values()):
+    def model_validate(cls, obj, **kwargs):
+        """Validate the model and ensure at least one field is being updated."""
+        if all(v is None for v in obj.values() if v is not None):
             raise ValueError("At least one field must be provided for update")
-        return values
+        return super().model_validate(obj, **kwargs)
 
 
 class ClientInDB(ClientBase):

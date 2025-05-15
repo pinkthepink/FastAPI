@@ -1,6 +1,6 @@
 import asyncio
 import os
-from typing import AsyncGenerator, Generator, List
+from typing import AsyncGenerator
 
 import pytest
 import pytest_asyncio
@@ -25,19 +25,14 @@ TEST_MONGODB_DB_NAME = f"test_{settings.mongodb_db_name}"
 settings.mongodb_uri = TEST_MONGODB_URI
 settings.mongodb_db_name = TEST_MONGODB_DB_NAME
 
-@pytest.fixture(scope="function")
-def event_loop():
-    """Create an instance of the default event loop for each test case."""
-    policy = asyncio.get_event_loop_policy()
-    loop = policy.new_event_loop()
-    asyncio.set_event_loop(loop)
-    yield loop
-    loop.close()
 
-@pytest_asyncio.fixture(scope="function")
+# IMPORTANT: Remove the event_loop fixture completely!
+# Let pytest-asyncio handle event loop management
+
+
+@pytest_asyncio.fixture
 async def mongo_client() -> AsyncGenerator[AsyncIOMotorClient, None]:
     """Create a MongoDB client for testing."""
-    # Initialize MongoDB client
     client = AsyncIOMotorClient(
         TEST_MONGODB_URI,
         maxPoolSize=10,
@@ -54,6 +49,9 @@ async def mongo_client() -> AsyncGenerator[AsyncIOMotorClient, None]:
         mongodb.client = client
         mongodb.db = client[TEST_MONGODB_DB_NAME]
         
+        # Clear the database before tests
+        await client.drop_database(TEST_MONGODB_DB_NAME)
+        
         yield client
         
         # Clean up database after tests
@@ -62,14 +60,8 @@ async def mongo_client() -> AsyncGenerator[AsyncIOMotorClient, None]:
         client.close()
 
 
-@pytest_asyncio.fixture(scope="function")
-async def clean_test_db(mongo_client) -> None:
-    """Clean the test database before each test."""
-    await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
-
-
 @pytest_asyncio.fixture
-async def app(mongo_client) -> FastAPI:
+async def app() -> FastAPI:
     """Create a FastAPI test application."""
     app = FastAPI()
     setup_error_handlers(app)
@@ -80,28 +72,30 @@ async def app(mongo_client) -> FastAPI:
 @pytest_asyncio.fixture
 async def async_client(app: FastAPI) -> AsyncGenerator[AsyncClient, None]:
     """Create an async test client."""
-    async with AsyncClient(base_url="http://test") as client:
-        app_client = TestClient(app)
-        transport = ASGITransport(app=app)
-        client.transport = transport
+    # Use ASGI transport to avoid actual HTTP requests
+    transport = ASGITransport(app=app)
+    
+    async with AsyncClient(
+        transport=transport,
+        base_url="http://test"
+    ) as client:
         yield client
 
 
 @pytest_asyncio.fixture
-async def client_repository(mongo_client, clean_test_db) -> ClientRepository:
+async def client_repository(mongo_client) -> ClientRepository:
     """Create a client repository for testing."""
     # Make sure MongoDB client is set in global MongoDB object
     from app.database.mongodb import mongodb
-    if not mongodb.db:
-        mongodb.client = mongo_client
-        mongodb.db = mongo_client[TEST_MONGODB_DB_NAME]
+    mongodb.client = mongo_client
+    mongodb.db = mongo_client[TEST_MONGODB_DB_NAME]
         
     collection = get_collection("clients")
     return ClientRepository(collection)
 
 
 @pytest_asyncio.fixture
-async def sample_clients(client_repository: ClientRepository) -> List[dict]:
+async def sample_clients(client_repository: ClientRepository) -> list:
     """Create sample clients for testing."""
     sample_data = [
         {

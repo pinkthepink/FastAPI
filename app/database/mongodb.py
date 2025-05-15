@@ -53,13 +53,15 @@ async def lifespan(app):
 
 def get_collection(collection_name: str) -> AsyncIOMotorCollection:
     """Get MongoDB collection."""
-    if not mongodb.db:
+    # FIX: Change this line to use 'is None' instead of 'not'
+    if mongodb.db is None:  # <-- This is the key change
         raise ConnectionError("MongoDB connection not established")
     return mongodb.db[collection_name]
 
 async def create_indexes() -> None:
     """Create indexes for MongoDB collections."""
-    if not mongodb.db:
+    # FIX: Change this line as well
+    if mongodb.db is None:  # <-- This is another key change
         raise ConnectionError("MongoDB connection not established")
     
     # Create indexes for the client collection

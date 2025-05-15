@@ -93,6 +93,27 @@ async def create_client(
     return created_client
 
 
+@router.get("/count", response_model=ClientCount, status_code=status.HTTP_200_OK)
+async def count_clients(
+    repository: ClientRepository = Depends(get_client_repository),
+    name: Optional[str] = Query(None, description="Filter by client name (partial match)"),
+    active: Optional[bool] = Query(None, description="Filter by active status"),
+) -> ClientCount:
+    """
+    Count clients with optional filtering.
+    
+    Args:
+        repository: Client repository dependency
+        name: Filter by client name (partial match)
+        active: Filter by active status
+        
+    Returns:
+        ClientCount: Count of clients
+    """
+    count = await repository.count(name=name, active=active)
+    return ClientCount(count=count)
+
+
 @router.get("/{client_id}", response_model=ClientResponse, status_code=status.HTTP_200_OK)
 async def get_client(
     client_id: str = Path(..., description="Client ID"),
@@ -184,24 +205,3 @@ async def delete_client(
             "Delete client", 
             client_id
         )
-
-
-@router.get("/count", response_model=ClientCount, status_code=status.HTTP_200_OK)
-async def count_clients(
-    repository: ClientRepository = Depends(get_client_repository),
-    name: Optional[str] = Query(None, description="Filter by client name (partial match)"),
-    active: Optional[bool] = Query(None, description="Filter by active status"),
-) -> ClientCount:
-    """
-    Count clients with optional filtering.
-    
-    Args:
-        repository: Client repository dependency
-        name: Filter by client name (partial match)
-        active: Filter by active status
-        
-    Returns:
-        ClientCount: Count of clients
-    """
-    count = await repository.count(name=name, active=active)
-    return ClientCount(count=count)

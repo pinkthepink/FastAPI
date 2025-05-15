@@ -34,7 +34,7 @@ class ClientRepository:
             active: Filter by active status
             
         Returns:
-            List of client dictionaries
+            List of client dictionaries with an added 'id' field as string from _id.
         """
         query: Dict[str, Any] = {}
         
@@ -47,6 +47,11 @@ class ClientRepository:
         cursor = self.collection.find(query).skip(skip).limit(limit).sort("updated_at", -1)
         
         result = await cursor.to_list(length=limit)
+        
+        # Add transformation to map _id to id for each document
+        for doc in result:
+            doc["id"] = str(doc["_id"])
+        
         return result
     
     async def find_by_id(self, id: Union[str, ObjectId]) -> Dict[str, Any]:
@@ -74,6 +79,9 @@ class ClientRepository:
         if not client:
             raise NotFoundError(f"Client with ID {id} not found")
         
+        # Add id field
+        client["id"] = str(client["_id"])
+        
         return client
     
     async def find_by_name(self, name: str) -> List[Dict[str, Any]]:
@@ -91,6 +99,11 @@ class ClientRepository:
         ).sort("name", 1)
         
         result = await cursor.to_list(length=100)
+        
+        # Add id field for each document
+        for doc in result:
+            doc["id"] = str(doc["_id"])
+            
         return result
     
     async def create(self, client_data: Union[ClientCreate, Dict[str, Any]]) -> Dict[str, Any]:
@@ -115,7 +128,9 @@ class ClientRepository:
         if existing:
             raise DuplicateError(f"Client with document_id {client_data['document_id']} already exists")
         
-        now = datetime.utcnow()
+        # Use datetime.now(timezone.utc) instead of datetime.utcnow()
+        from datetime import timezone
+        now = datetime.now(timezone.utc)
         client_dict = {
             **client_data,
             "created_at": now,
@@ -169,10 +184,12 @@ class ClientRepository:
         # Check if client exists
         await self.find_by_id(id)
         
+        # Use datetime.now(timezone.utc) instead of datetime.utcnow()
+        from datetime import timezone
         update_dict = {
             "$set": {
                 **update_data,
-                "updated_at": datetime.utcnow(),
+                "updated_at": datetime.now(timezone.utc),
             }
         }
         

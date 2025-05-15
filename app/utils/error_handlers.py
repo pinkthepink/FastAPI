@@ -3,7 +3,6 @@ from typing import Any, Dict, List, Optional, Union
 
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
 from pydantic import ValidationError as PydanticValidationError
 from pymongo.errors import DuplicateKeyError
 
@@ -16,6 +15,7 @@ from app.core.errors import (
     UnauthorizedError,
     ValidationError,
 )
+from app.utils.json import JSONResponse
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +62,7 @@ def setup_error_handlers(app: FastAPI) -> None:
                 message=exc.message,
                 details=exc.details,
                 request_id=request.headers.get("X-Request-ID"),
-            ),
+            )
         )
     
     @app.exception_handler(RequestValidationError)
@@ -85,7 +85,7 @@ def setup_error_handlers(app: FastAPI) -> None:
                 message="Validation error",
                 details=exc.errors(),
                 request_id=request.headers.get("X-Request-ID"),
-            ),
+            )
         )
     
     @app.exception_handler(PydanticValidationError)
@@ -108,7 +108,7 @@ def setup_error_handlers(app: FastAPI) -> None:
                 message="Validation error",
                 details=exc.errors(),
                 request_id=request.headers.get("X-Request-ID"),
-            ),
+            )
         )
     
     @app.exception_handler(DuplicateKeyError)
@@ -131,7 +131,7 @@ def setup_error_handlers(app: FastAPI) -> None:
                 message="Resource already exists",
                 details=str(exc),
                 request_id=request.headers.get("X-Request-ID"),
-            ),
+            )
         )
     
     @app.exception_handler(Exception)
@@ -150,5 +150,5 @@ def setup_error_handlers(app: FastAPI) -> None:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 message="Internal server error",
                 request_id=request.headers.get("X-Request-ID"),
-            ),
+            )
         )

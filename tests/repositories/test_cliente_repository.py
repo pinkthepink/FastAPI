@@ -53,7 +53,11 @@ async def test_find_by_name(client_repository: ClientRepository, sample_clients)
     """Test finding clients by name."""
     # Get clients by name
     clients = await client_repository.find_by_name("Test")
-    assert len(clients) == 2
+    assert len(clients) == 3  # All three clients have "Test" in their name
+    
+    # Test with specific name part
+    clients = await client_repository.find_by_name("Another")
+    assert len(clients) == 1
     
     # Test with non-existent name
     clients = await client_repository.find_by_name("NonExistent")
@@ -160,4 +164,4 @@ async def test_count(client_repository: ClientRepository, sample_clients):
     
     # Test combined filters
     count = await client_repository.count(name="Test", active=True)
-    assert count == 1
+    assert count == 2  # Both "Test Client 1" and "Another Test Client" are active
