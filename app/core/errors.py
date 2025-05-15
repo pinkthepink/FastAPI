@@ -1,14 +1,13 @@
 from typing import Any, Dict, List, Optional, Union
-from fastapi import HTTPException, status
 
-class PetshopException(Exception):
-    """Base exception for Petshop application errors"""
+class AppError(Exception):
+    """Base exception class for application errors."""
     
     def __init__(
         self, 
-        message: str = "An error occurred", 
-        status_code: int = status.HTTP_500_INTERNAL_SERVER_ERROR,
-        details: Optional[Union[List[Any], Dict[str, Any]]] = None
+        message: str = "An unexpected error occurred", 
+        status_code: int = 500,
+        details: Optional[Union[str, Dict[str, Any], List[Dict[str, Any]]]] = None
     ):
         self.message = message
         self.status_code = status_code
@@ -16,52 +15,67 @@ class PetshopException(Exception):
         super().__init__(self.message)
 
 
-# Validation error
-class ValidationError(PetshopException):
-    def __init__(self, message: str = "Dados inválidos", details: Optional[List[Dict[str, Any]]] = None):
-        super().__init__(message=message, status_code=status.HTTP_400_BAD_REQUEST, details=details)
+class NotFoundError(AppError):
+    """Exception raised when a resource is not found."""
+    
+    def __init__(
+        self, 
+        message: str = "Resource not found", 
+        details: Optional[Union[str, Dict[str, Any], List[Dict[str, Any]]]] = None
+    ):
+        super().__init__(message=message, status_code=404, details=details)
 
 
-# Not found error
-class NotFoundError(PetshopException):
-    def __init__(self, entity: str):
-        super().__init__(
-            message=f"{entity} não encontrado",
-            status_code=status.HTTP_404_NOT_FOUND
-        )
+class ValidationError(AppError):
+    """Exception raised when input validation fails."""
+    
+    def __init__(
+        self, 
+        message: str = "Validation error", 
+        details: Optional[Union[str, Dict[str, Any], List[Dict[str, Any]]]] = None
+    ):
+        super().__init__(message=message, status_code=400, details=details)
 
 
-# Duplicate record error
-class DuplicateError(PetshopException):
-    def __init__(self, message: str = "Registro duplicado"):
-        super().__init__(
-            message=message, 
-            status_code=status.HTTP_409_CONFLICT
-        )
+class DatabaseError(AppError):
+    """Exception raised when a database operation fails."""
+    
+    def __init__(
+        self, 
+        message: str = "Database operation failed", 
+        details: Optional[Union[str, Dict[str, Any], List[Dict[str, Any]]]] = None
+    ):
+        super().__init__(message=message, status_code=500, details=details)
 
 
-# Database error
-class DatabaseError(PetshopException):
-    def __init__(self, message: str = "Erro na operação de banco de dados"):
-        super().__init__(
-            message=message,
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
+class DuplicateError(AppError):
+    """Exception raised when trying to create a duplicate resource."""
+    
+    def __init__(
+        self, 
+        message: str = "Resource already exists", 
+        details: Optional[Union[str, Dict[str, Any], List[Dict[str, Any]]]] = None
+    ):
+        super().__init__(message=message, status_code=409, details=details)
 
 
-# Authentication error
-class AuthenticationError(PetshopException):
-    def __init__(self, message: str = "Falha na autenticação"):
-        super().__init__(
-            message=message,
-            status_code=status.HTTP_401_UNAUTHORIZED
-        )
+class UnauthorizedError(AppError):
+    """Exception raised when authentication fails."""
+    
+    def __init__(
+        self, 
+        message: str = "Authentication required", 
+        details: Optional[Union[str, Dict[str, Any], List[Dict[str, Any]]]] = None
+    ):
+        super().__init__(message=message, status_code=401, details=details)
 
 
-# Authorization error
-class AuthorizationError(PetshopException):
-    def __init__(self, message: str = "Não autorizado"):
-        super().__init__(
-            message=message,
-            status_code=status.HTTP_403_FORBIDDEN
-        )
+class ForbiddenError(AppError):
+    """Exception raised when a user doesn't have permission for an action."""
+    
+    def __init__(
+        self, 
+        message: str = "Access forbidden", 
+        details: Optional[Union[str, Dict[str, Any], List[Dict[str, Any]]]] = None
+    ):
+        super().__init__(message=message, status_code=403, details=details)

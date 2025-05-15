@@ -1,0 +1,247 @@
+Step-by-Step Guide to Building an Async-First Client Management API with FastAPI
+This guide walks through creating a REST API for client management using FastAPI with async operations and best practices.
+1. Project Setup
+
+Create the project structure
+
+Create main directories: app/, tests/
+Create subdirectories within app/: api/, core/, database/, repositories/, schemas/, utils/
+Create subdirectories within api/: dependencies/, endpoints/
+Create subdirectories within tests/: api/, repositories/
+
+
+Set up the virtual environment
+
+Create a virtual environment: python -m venv venv
+Activate it:
+
+On Windows: venv\Scripts\activate
+On macOS/Linux: source venv/bin/activate
+
+
+
+
+Install dependencies
+
+Create a requirements.txt file with these packages:
+
+fastapi
+uvicorn
+motor (async MongoDB driver)
+pydantic
+python-dotenv
+pytest
+pytest-asyncio
+httpx
+
+
+Install the dependencies: pip install -r requirements.txt
+
+
+
+2. Configuration Setup
+
+Create environment variables setup
+
+Create .env.example file with placeholders for MongoDB URI, port, etc.
+Create .env file from the example and fill in real values
+
+
+Create configuration module
+
+Create app/core/config.py for settings
+Implement a Settings class using Pydantic
+Add MongoDB connection parameters
+Add server configuration settings
+
+
+
+3. Database Connection Setup
+
+Create MongoDB connection module
+
+Create app/database/mongodb.py
+Implement async connection functions using Motor
+Create a lifespan context manager for FastAPI
+Implement connection pool management
+
+
+
+4. Create Error Handling Framework
+
+Create custom exception classes
+
+Create app/core/errors.py
+Implement base exception class and specialized exceptions:
+
+NotFoundError
+ValidationError
+DatabaseError
+DuplicateError
+
+
+
+
+Create error handler utility
+
+Create app/utils/error_handlers.py
+Implement a centralized error handler for API operations
+
+
+
+5. Create Data Models/Schemas
+
+Create client schemas
+
+Create app/schemas/cliente.py
+Implement Pydantic models:
+
+ClienteBase (common fields)
+ClienteCreate (for creation)
+ClienteUpdate (for updates - all fields optional)
+ClienteResponse (for API responses)
+
+
+
+
+
+6. Create Repository Layer
+
+Create client repository
+
+Create app/repositories/cliente_repository.py
+Implement ClienteRepository class with methods:
+
+find_all()
+find_by_id()
+create()
+update()
+delete()
+find_by_nome() (for filtering)
+count()
+
+
+Ensure all methods are async
+
+
+
+7. Set Up API Dependencies
+
+Create client dependencies
+
+Create app/api/dependencies/cliente_dependencies.py
+Implement async dependency functions:
+
+get_cliente_collection()
+get_cliente_repository()
+
+
+
+
+
+8. Create API Endpoints
+
+Create client endpoints
+
+Create app/api/endpoints/clientes.py
+Implement REST endpoints with FastAPI:
+
+GET / - list all clients (with optional name filter)
+POST / - create client
+GET /{id} - get client by ID
+PUT /{id} - update client
+DELETE /{id} - delete client
+GET /count - count clients
+
+
+Include error handling
+Add background tasks for operations (like logging)
+
+
+Create API router
+
+Create app/api/api_router.py
+Include all endpoint routers
+
+
+
+9. Create Main Application
+
+Create main application file
+
+Create app/main.py
+Initialize FastAPI with lifecycle manager
+Add CORS middleware
+Add request timing middleware
+Add request logging middleware
+Set up global exception handler
+Include API router
+
+
+
+10. Set Up Testing Framework
+
+Create test configuration
+
+Create tests/conftest.py
+Implement test fixtures:
+
+event_loop
+app
+async_client
+mongo_client (with test database)
+cliente_repository
+sample_clientes (test data)
+
+
+
+
+Create repository tests
+
+Create tests/repositories/test_cliente_repository.py
+Implement tests for repository methods
+
+
+Create API endpoint tests
+
+Create tests/api/test_clientes.py
+Implement tests for API endpoints
+
+
+
+11. Docker Setup (Optional)
+
+Create Dockerfile
+
+Base image: python:3.11-slim
+Install dependencies
+Copy application code
+Expose port
+Set command to run uvicorn
+
+
+Create docker-compose.yml
+
+
+Define services:
+
+API service
+MongoDB service
+
+
+Set up networks and volumes
+
+
+
+12. Run and Test the Application
+
+Run the server locally
+
+Run with uvicorn: uvicorn app.main:app --reload
+Access the API documentation at http://localhost:8000/docs
+
+
+Run tests
+
+Run all tests: pytest
+Run specific test file: pytest tests/api/test_clientes.py

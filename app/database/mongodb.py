@@ -1,97 +1,70 @@
-from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
-from pymongo.errors import ConnectionFailure, ServerSelectionTimeoutError
 import logging
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator, Optional, Dict, Any
-from fastapi import FastAPI
+from typing import AsyncGenerator, Dict, List, Optional
 
-from app.core.config import get_mongodb_uri, settings
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection, AsyncIOMotorDatabase
+from pymongo.errors import ConnectionFailure, OperationFailure, ServerSelectionTimeoutError
 
-# Configure logging
+from app.core.config import settings
+
 logger = logging.getLogger(__name__)
 
-
-# MongoDB connection state management
-class MongoDBState:
+class MongoDB:
     client: Optional[AsyncIOMotorClient] = None
     db: Optional[AsyncIOMotorDatabase] = None
-    collections: Dict[str, Any] = {}
 
+mongodb = MongoDB()
 
-# Global MongoDB state
-mongodb = MongoDBState()
-
-
-async def get_mongo_client() -> AsyncIOMotorClient:
-    """Get MongoDB client."""
-    if mongodb.client is None:
-        logger.info("Creating MongoDB client...")
+async def connect_to_mongo() -> None:
+    """Create database connection."""
+    logger.info("Connecting to MongoDB...")
+    try:
         mongodb.client = AsyncIOMotorClient(
-            get_mongodb_uri(),
+            settings.mongodb_uri,
             maxPoolSize=10,
             minPoolSize=1,
             serverSelectionTimeoutMS=5000,
         )
-    return mongodb.client
-
-
-async def get_mongo_db() -> AsyncIOMotorDatabase:
-    """Get MongoDB database."""
-    if mongodb.db is None:
-        client = await get_mongo_client()
-        db_name = get_mongodb_uri().split("/")[-1]
-        mongodb.db = client[db_name]
-    return mongodb.db
-
-
-async def get_collection(collection_name: str):
-    """Get MongoDB collection."""
-    if collection_name not in mongodb.collections:
-        db = await get_mongo_db()
-        mongodb.collections[collection_name] = db[collection_name]
-    return mongodb.collections[collection_name]
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """FastAPI lifespan context manager to handle MongoDB connections."""
-    # Set up database connection
-    logger.info("Connecting to MongoDB...")
-    client = AsyncIOMotorClient(
-        get_mongodb_uri(),
-        maxPoolSize=10,
-        minPoolSize=1,
-        serverSelectionTimeoutMS=5000,
-    )
-    
-    try:
-        # Check connection
-        await client.admin.command("ping")
+        
+        # Validate connection
+        await mongodb.client.admin.command("ping")
         logger.info("Connected to MongoDB")
         
-        # Get database name from URI
-        db_name = get_mongodb_uri().split("/")[-1]
-        db = client[db_name]
-        
-        # Store in global state
-        mongodb.client = client
-        mongodb.db = db
-        
-        # Store in app state for direct access
-        app.state.db_client = client
-        app.state.db = db
-        
-        yield  # App runs here
-        
+        mongodb.db = mongodb.client[settings.mongodb_db_name]
     except (ConnectionFailure, ServerSelectionTimeoutError) as e:
         logger.error(f"Failed to connect to MongoDB: {e}")
         raise
-    finally:
-        # Close connection
-        if mongodb.client:
-            logger.info("Closing MongoDB connection...")
-            mongodb.client.close()
-            mongodb.client = None
-            mongodb.db = None
-            mongodb.collections = {}
-            logger.info("MongoDB connection closed")
+
+async def close_mongo_connection() -> None:
+    """Close database connection."""
+    logger.info("Closing MongoDB connection...")
+    if mongodb.client:
+        mongodb.client.close()
+        mongodb.client = None
+        mongodb.db = None
+    logger.info("MongoDB connection closed")
+
+@asynccontextmanager
+async def lifespan(app):
+    """FastAPI lifespan context manager for database connection."""
+    await connect_to_mongo()
+    yield
+    await close_mongo_connection()
+
+def get_collection(collection_name: str) -> AsyncIOMotorCollection:
+    """Get MongoDB collection."""
+    if not mongodb.db:
+        raise ConnectionError("MongoDB connection not established")
+    return mongodb.db[collection_name]
+
+async def create_indexes() -> None:
+    """Create indexes for MongoDB collections."""
+    if not mongodb.db:
+        raise ConnectionError("MongoDB connection not established")
+    
+    # Create indexes for the client collection
+    client_collection = get_collection("clients")
+    await client_collection.create_index("email", unique=True)
+    await client_collection.create_index("name")
+    
+    logger.info("MongoDB indexes created successfully")

@@ -1,187 +1,191 @@
 import pytest
 from httpx import AsyncClient
-from bson import ObjectId
-import json
+from fastapi import status
 
-from app.main import app
-
-
-# Helper function to convert ObjectId to string in JSON
-def json_dumps(data):
-    return json.dumps(data, default=str)
+from app.core.config import settings
 
 
 @pytest.mark.asyncio
-async def test_list_clientes(async_client: AsyncClient, sample_clientes):
-    """Test listing all clientes."""
-    # Act
-    response = await async_client.get("/api/clientes/")
+async def test_list_clients(async_client: AsyncClient, sample_clients):
+    """Test listing clients."""
+    response = await async_client.get(f"{settings.api_v1_str}/clients/")
+    assert response.status_code == status.HTTP_200_OK
     
-    # Assert
-    assert response.status_code == 200
     data = response.json()
-    # The database has existing data, just check our test data is included
-    assert any(cliente["nome"] == "John Doe" for cliente in data)
-    assert any(cliente["nome"] == "Jane Smith" for cliente in data)
-    assert any(cliente["nome"] == "Bob Johnson" for cliente in data)
-
+    assert "total" in data
+    assert "clients" in data
+    assert data["total"] == 3
+    assert len(data["clients"]) == 3
 
 
 @pytest.mark.asyncio
-async def test_get_cliente(async_client: AsyncClient, sample_clientes):
-    """Test getting a cliente by ID."""
-    # Arrange
-    id = sample_clientes[0]["_id"]
+async def test_list_clients_with_filtering(async_client: AsyncClient, sample_clients):
+    """Test listing clients with filtering."""
+    # Test name filter
+    response = await async_client.get(
+        f"{settings.api_v1_str}/clients/", params={"name": "Another"}
+    )
+    assert response.status_code == status.HTTP_200_OK
     
-    # Act
-    response = await async_client.get(f"/api/clientes/{id}")
-    
-    # Assert
-    assert response.status_code == 200
     data = response.json()
-    assert data["_id"] == id
-    assert data["nome"] == "John Doe"
-
-
-@pytest.mark.asyncio
-async def test_get_cliente_not_found(async_client: AsyncClient):
-    """Test getting a cliente by ID when not found."""
-    # Arrange
-    non_existent_id = str(ObjectId())
+    assert data["total"] == 1
+    assert data["clients"][0]["name"] == "Another Test Client"
     
-    # Act
-    response = await async_client.get(f"/api/clientes/{non_existent_id}")
+    # Test active filter
+    response = await async_client.get(
+        f"{settings.api_v1_str}/clients/", params={"active": "false"}
+    )
+    assert response.status_code == status.HTTP_200_OK
     
-    # Assert
-    assert response.status_code == 404
     data = response.json()
-    assert "error" in data
-    assert "Cliente não encontrado" in data["error"]
+    assert data["total"] == 1
+    assert data["clients"][0]["name"] == "Test Client 2"
+    
+    # Test pagination
+    response = await async_client.get(
+        f"{settings.api_v1_str}/clients/", params={"skip": "1", "limit": "1"}
+    )
+    assert response.status_code == status.HTTP_200_OK
+    
+    data = response.json()
+    assert data["total"] == 3
+    assert len(data["clients"]) == 1
 
 
 @pytest.mark.asyncio
-async def test_create_cliente(async_client: AsyncClient):
-    """Test creating a new cliente."""
-    # Arrange
-    new_cliente = {
-        "nome": "New Cliente",
-        "telefone": "555-111-2222",
-        "cidade": "Curitiba",
-        "uf": "PR"
+async def test_create_client(async_client: AsyncClient):
+    """Test creating a client."""
+    new_client_data = {
+        "name": "API Test Client",
+        "document_id": "999.888.777-66",
+        "active": True,
+        "contact": {
+            "phone": "555-999-8888",
+            "email": "api_test@example.com",
+        },
+        "address": {
+            "street": "202 API St",
+            "city": "API City",
+            "state": "AP",
+            "zip_code": "12345",
+            "country": "API Country",
+        },
+        "notes": "API test client notes",
     }
     
-    # Act
-    response = await async_client.post("/api/clientes/", json=new_cliente)
+    response = await async_client.post(
+        f"{settings.api_v1_str}/clients/", json=new_client_data
+    )
+    assert response.status_code == status.HTTP_201_CREATED
     
-    # Assert
-    assert response.status_code == 201
     data = response.json()
-    assert data["nome"] == "New Cliente"
-    assert data["telefone"] == "555-111-2222"
-    assert data["cidade"] == "Curitiba"
-    assert data["uf"] == "PR"
-    assert "_id" in data
+    assert data["name"] == "API Test Client"
+    assert "id" in data
+    assert "created_at" in data
+    assert "updated_at" in data
+    
+    # Test duplicate document_id
+    response = await async_client.post(
+        f"{settings.api_v1_str}/clients/", json=new_client_data
+    )
+    assert response.status_code == status.HTTP_409_CONFLICT
 
 
 @pytest.mark.asyncio
-async def test_create_cliente_invalid(async_client: AsyncClient):
-    """Test creating a new cliente with invalid data."""
-    # Arrange
-    invalid_cliente = {
-        # Missing required nome field
-        "telefone": "555-111-2222"
-    }
+async def test_get_client(async_client: AsyncClient, sample_clients):
+    """Test getting a client by ID."""
+    client_id = str(sample_clients[0]["_id"])
     
-    # Act
-    response = await async_client.post("/api/clientes/", json=invalid_cliente)
+    response = await async_client.get(f"{settings.api_v1_str}/clients/{client_id}")
+    assert response.status_code == status.HTTP_200_OK
     
-    # Assert
-    assert response.status_code == 422  # Validation error
+    data = response.json()
+    assert data["name"] == "Test Client 1"
+    assert data["id"] == client_id
+    
+    # Test with invalid ID
+    response = await async_client.get(f"{settings.api_v1_str}/clients/invalid_id")
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    
+    # Test with non-existent ID
+    response = await async_client.get(f"{settings.api_v1_str}/clients/507f1f77bcf86cd799439011")
+    assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
 @pytest.mark.asyncio
-async def test_update_cliente(async_client: AsyncClient, sample_clientes):
-    """Test updating a cliente."""
-    # Arrange
-    id = sample_clientes[0]["_id"]
+async def test_update_client(async_client: AsyncClient, sample_clients):
+    """Test updating a client."""
+    client_id = str(sample_clients[0]["_id"])
+    
     update_data = {
-        "nome": "Updated Name",
-        "telefone": "555-999-8888"
+        "name": "API Updated Client",
+        "notes": "Updated via API test",
     }
     
-    # Act
-    response = await async_client.put(f"/api/clientes/{id}", json=update_data)
+    response = await async_client.put(
+        f"{settings.api_v1_str}/clients/{client_id}", json=update_data
+    )
+    assert response.status_code == status.HTTP_200_OK
     
-    # Assert
-    assert response.status_code == 200
     data = response.json()
-    assert data["_id"] == id
-    assert data["nome"] == "Updated Name"
-    assert data["telefone"] == "555-999-8888"
-    assert data["cidade"] == "São Paulo"  # Unchanged field
+    assert data["name"] == "API Updated Client"
+    assert data["notes"] == "Updated via API test"
+    assert data["document_id"] == sample_clients[0]["document_id"]
+    
+    # Test with invalid ID
+    response = await async_client.put(
+        f"{settings.api_v1_str}/clients/invalid_id", json=update_data
+    )
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    
+    # Test with empty update data
+    response = await async_client.put(
+        f"{settings.api_v1_str}/clients/{client_id}", json={}
+    )
+    assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
 @pytest.mark.asyncio
-async def test_update_cliente_not_found(async_client: AsyncClient):
-    """Test updating a cliente when not found."""
-    # Arrange
-    non_existent_id = str(ObjectId())
-    update_data = {"nome": "Updated Name"}
+async def test_delete_client(async_client: AsyncClient, sample_clients):
+    """Test deleting a client."""
+    client_id = str(sample_clients[0]["_id"])
     
-    # Act
-    response = await async_client.put(f"/api/clientes/{non_existent_id}", json=update_data)
+    response = await async_client.delete(f"{settings.api_v1_str}/clients/{client_id}")
+    assert response.status_code == status.HTTP_204_NO_CONTENT
     
-    # Assert
-    assert response.status_code == 404
-    data = response.json()
-    assert "error" in data
-    assert "Cliente não encontrado" in data["error"]
+    # Verify the client was deleted
+    response = await async_client.get(f"{settings.api_v1_str}/clients/{client_id}")
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    
+    # Test with invalid ID
+    response = await async_client.delete(f"{settings.api_v1_str}/clients/invalid_id")
+    assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
 @pytest.mark.asyncio
-async def test_delete_cliente(async_client: AsyncClient, sample_clientes):
-    """Test deleting a cliente."""
-    # Arrange
-    id = sample_clientes[0]["_id"]
+async def test_count_clients(async_client: AsyncClient, sample_clients):
+    """Test counting clients."""
+    response = await async_client.get(f"{settings.api_v1_str}/clients/count")
+    assert response.status_code == status.HTTP_200_OK
     
-    # Act
-    response = await async_client.delete(f"/api/clientes/{id}")
-    
-    # Assert
-    assert response.status_code == 200
     data = response.json()
-    assert data["message"] == "Cliente excluído com sucesso"
+    assert "count" in data
+    assert data["count"] == 3
     
-    # Verify it's deleted
-    get_response = await async_client.get(f"/api/clientes/{id}")
-    assert get_response.status_code == 404
-
-
-@pytest.mark.asyncio
-async def test_delete_cliente_not_found(async_client: AsyncClient):
-    """Test deleting a cliente when not found."""
-    # Arrange
-    non_existent_id = str(ObjectId())
+    # Test name filter
+    response = await async_client.get(
+        f"{settings.api_v1_str}/clients/count", params={"name": "Another"}
+    )
+    assert response.status_code == status.HTTP_200_OK
     
-    # Act
-    response = await async_client.delete(f"/api/clientes/{non_existent_id}")
-    
-    # Assert
-    assert response.status_code == 404
     data = response.json()
-    assert "error" in data
-    assert "Cliente não encontrado" in data["error"]
-
-
-@pytest.mark.asyncio
-async def test_filter_clientes_by_nome(async_client: AsyncClient, sample_clientes):
-    """Test filtering clientes by nome."""
-    # Act
-    response = await async_client.get("/api/clientes/?nome=Jo")
+    assert data["count"] == 1
     
-    # Assert
-    assert response.status_code == 200
+    # Test active filter
+    response = await async_client.get(
+        f"{settings.api_v1_str}/clients/count", params={"active": "false"}
+    )
+    assert response.status_code == status.HTTP_200_OK
+    
     data = response.json()
-    assert len(data) == 2  # Both John Doe and Bob Johnson
-    assert any(cliente["nome"] == "John Doe" for cliente in data)
-    assert any(cliente["nome"] == "Bob Johnson" for cliente in data)
+    assert data["count"] == 1

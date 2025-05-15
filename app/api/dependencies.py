@@ -1,71 +1,65 @@
-from typing import Annotated, AsyncGenerator, Optional
-from fastapi import Depends, HTTPException, status
+import logging
+import time
+from typing import Callable, Optional
+from uuid import uuid4
+
+from fastapi import Depends, Header, Request
 from fastapi.security import OAuth2PasswordBearer
-from jose import JWTError, jwt
-from datetime import datetime, timedelta
-from pydantic import ValidationError
 
 from app.core.config import settings
-from app.database.mongodb import get_database_session
-from app.core.errors import AuthenticationError
-from app.schemas.auth import TokenPayload, UserInDB
 
-# OAuth2 password bearer scheme
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/login")
+logger = logging.getLogger(__name__)
 
-# Database dependency
-async def get_db() -> AsyncGenerator:
-    async with get_database_session() as db:
-        yield db
+# OAuth2 token URL for authentication
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.api_v1_str}/auth/login")
 
 
-# Authentication dependencies
-async def get_current_user(
-    token: Annotated[str, Depends(oauth2_scheme)],
-    db: Annotated[AsyncGenerator, Depends(get_db)]
-) -> UserInDB:
-    try:
-        payload = jwt.decode(
-            token, 
-            settings.JWT_SECRET, 
-            algorithms=[settings.JWT_ALGORITHM]
+async def get_request_id(
+    x_request_id: Optional[str] = Header(None)
+) -> str:
+    """
+    Get or generate a request ID for tracking.
+    
+    Args:
+        x_request_id: Optional request ID from header
+        
+    Returns:
+        str: The request ID
+    """
+    if x_request_id:
+        return x_request_id
+    return str(uuid4())
+
+
+def log_request_time() -> Callable:
+    """
+    Create a dependency for logging request processing time.
+    
+    Returns:
+        Callable: A dependency function for timing requests
+    """
+    
+    async def _log_request_time(request: Request) -> None:
+        """
+        Measure and log the request processing time.
+        
+        Args:
+            request: The FastAPI request object
+        """
+        request.state.start_time = time.time()
+        
+        # This will be called after the request is processed
+        yield
+        
+        process_time = time.time() - request.state.start_time
+        logger.info(
+            f"Request processed in {process_time:.4f} seconds",
+            extra={
+                "path": request.url.path,
+                "method": request.method,
+                "processing_time": process_time,
+                "request_id": request.headers.get("X-Request-ID"),
+            },
         )
-        token_data = TokenPayload(**payload)
-        
-        if datetime.fromtimestamp(token_data.exp) < datetime.now():
-            raise AuthenticationError("Token expirado")
-            
-        # Get user from database
-        user_collection = db["usuarios"]
-        user = await user_collection.find_one({"_id": token_data.sub})
-        
-        if not user:
-            raise AuthenticationError("Usuário não encontrado")
-            
-        return UserInDB(**user)
-        
-    except (JWTError, ValidationError):
-        raise AuthenticationError("Credenciais inválidas")
-
-
-# Optional current user dependency
-async def get_optional_current_user(
-    token: str = Depends(oauth2_scheme),
-    db: AsyncGenerator = Depends(get_db)
-) -> Optional[UserInDB]:
-    try:
-        return await get_current_user(token, db)
-    except AuthenticationError:
-        return None
-        
-
-# Admin user dependency
-async def get_admin_user(
-    current_user: Annotated[UserInDB, Depends(get_current_user)]
-) -> UserInDB:
-    if not current_user.is_admin:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Permissões de administrador necessárias"
-        )
-    return current_user
+    
+    return _log_request_time

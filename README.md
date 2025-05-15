@@ -1,87 +1,165 @@
-# Petshop API - FastAPI Version
+# Client Management API
 
-This is the FastAPI implementation of the Petshop Management API.
+A REST API for client management using FastAPI with async operations and best practices.
+
+## Features
+
+- Async-first implementation using FastAPI and Motor
+- MongoDB integration
+- RESTful API endpoints
+- Comprehensive error handling
+- Background tasks
+- Middleware for request logging, timing, and identification
+- Comprehensive test suite
 
 ## Requirements
 
-- Python 3.8+
-- MongoDB
+- Python 3.11+
+- MongoDB 6.0+
+- Docker and Docker Compose (optional)
 
-## Project Structure
+## Installation
 
-```
-python/
-├── app/
-│   ├── api/
-│   │   ├── dependencies.py      # Dependency injection
-│   │   ├── api_router.py        # API router
-│   │   └── endpoints/           # API endpoints
-│   ├── core/                    # Core configuration
-│   │   ├── config.py            # Settings
-│   │   ├── errors.py            # Exception classes
-│   │   └── security.py          # Security utils
-│   ├── database/                # Database connections
-│   │   └── mongodb.py           # MongoDB connection
-│   ├── middleware/              # Custom middleware
-│   ├── models/                  # Pydantic models
-│   ├── schemas/                 # Request/response models
-│   ├── utils/                   # Utility functions
-│   │   └── error_handlers.py    # Error handling
-│   └── main.py                  # Application entry point
-├── tests/                       # Test files
-├── .env.example                 # Environment variables example
-├── requirements.txt             # Project dependencies
-└── README.md                    # This file
-```
+### Local Development
 
-## Setup
-
-1. Clone the repository
-2. Create a virtual environment:
-   ```
-   python -m venv venv
-   source venv/bin/activate  # Linux/Mac
-   venv\Scripts\activate     # Windows
+1. Clone this repository
+2. Create a virtual environment and activate it:
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate  # On Linux/macOS
    ```
 3. Install dependencies:
-   ```
+   ```bash
    pip install -r requirements.txt
    ```
-4. Copy `.env.example` to `.env` and configure your environment variables
-5. Run the server:
+4. Create a `.env` file based on `.env.example` and update the values as needed
+5. Ensure MongoDB is running locally or use Docker Compose to start MongoDB
+6. Start the application using the provided script:
+   ```bash
+   ./run.sh
    ```
+   
+   Or manually:
+   ```bash
    uvicorn app.main:app --reload
+   ```
+
+### Using Docker
+
+1. Clone this repository
+2. Make sure Docker and Docker Compose are installed
+3. Create a `.env` file based on `.env.example` (optional, defaults are set in docker-compose.yml)
+4. Start the application using the provided script:
+   ```bash
+   ./docker-run.sh
+   ```
+   
+   Or manually:
+   ```bash
+   docker-compose up
    ```
 
 ## API Documentation
 
-Once the server is running, you can access:
-- API documentation at `/docs`
-- Alternative documentation at `/redoc`
+Once the application is running, you can access the API documentation at:
 
-## Technologies Used
+- Swagger UI: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redoc
 
-- FastAPI - Web framework
-- Motor - Async MongoDB driver
-- Pydantic - Data validation
-- Uvicorn - ASGI server
+## Troubleshooting
 
-## Development
+If you encounter any issues running the application or tests, please refer to the [Troubleshooting Guide](TROUBLESHOOTING.md).
+
+## Testing
+
+### Test Requirements
+
+Before running the tests, make sure you have:
+
+1. MongoDB running locally (required for repository and API tests)
+2. All dependencies installed
 
 ### Running Tests
 
+Run the tests using the provided script:
+
+```bash
+./run_tests.sh
 ```
+
+Or manually:
+
+```bash
 pytest
 ```
 
-### Linting
+To run a specific test file:
+
+```bash
+./run_tests.sh tests/api/test_clientes.py
+```
+
+To run tests with verbose output:
+
+```bash
+./run_tests.sh -v
+```
+
+### Troubleshooting Tests
+
+If tests are failing with MongoDB connection errors, make sure MongoDB is installed and running:
+
+```bash
+# Install MongoDB on Ubuntu
+sudo apt install mongodb
+
+# Check MongoDB status
+sudo systemctl status mongodb
+
+# Start MongoDB if not running
+sudo systemctl start mongodb
+```
+
+### Running Tests with Docker
+
+The simplest way to run tests is with Docker Compose, which will automatically set up MongoDB:
+
+```bash
+# Run all tests using the provided script
+./docker-test.sh
+
+# Run specific tests with the script
+./docker-test.sh pytest tests/api/test_clientes.py -v
+
+# Or run tests directly with docker-compose
+docker-compose run test
+```
+
+Alternatively, you can just use Docker to run MongoDB for testing:
+
+```bash
+docker run --name mongodb-test -p 27017:27017 -d mongo:6
+```
+
+## Project Structure
 
 ```
-flake8 app tests
-```
-
-### Formatting
-
-```
-black app tests
+.
+├── app                      # Application code
+│   ├── api                  # API endpoints and dependencies
+│   │   ├── dependencies     # API dependencies
+│   │   └── endpoints        # API endpoint handlers
+│   ├── core                 # Core modules
+│   ├── database             # Database connection
+│   ├── repositories         # Data access layer
+│   ├── schemas              # Pydantic models
+│   └── utils                # Utility functions
+├── tests                    # Test suite
+│   ├── api                  # API tests
+│   └── repositories         # Repository tests
+├── .env.example             # Example environment variables
+├── docker-compose.yml       # Docker Compose configuration
+├── Dockerfile               # Docker configuration
+├── requirements.txt         # Python dependencies
+└── README.md                # This file
 ```

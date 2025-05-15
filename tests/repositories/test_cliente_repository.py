@@ -1,154 +1,163 @@
 import pytest
 from bson import ObjectId
-from app.repositories.cliente_repository import ClienteRepository
-from app.schemas.cliente import ClienteCreate, ClienteUpdate
-from app.core.errors import NotFoundError
+
+from app.core.errors import NotFoundError, DuplicateError
+from app.repositories.cliente_repository import ClientRepository
 
 
 @pytest.mark.asyncio
-async def test_find_all(cliente_repository: ClienteRepository, sample_clientes):
-    """Test finding all clientes."""
-    # Act
-    result = await cliente_repository.find_all()
+async def test_find_all(client_repository: ClientRepository, sample_clients):
+    """Test finding all clients."""
+    # Get all clients
+    clients = await client_repository.find_all()
+    assert len(clients) == 3
     
-    # Assert
-    assert len(result) == 3
-    assert all(cliente["_id"] for cliente in result)  # Ensure all have string IDs
-    assert any(cliente["nome"] == "John Doe" for cliente in result)
-    assert any(cliente["nome"] == "Jane Smith" for cliente in result)
-    assert any(cliente["nome"] == "Bob Johnson" for cliente in result)
+    # Test skip and limit
+    clients = await client_repository.find_all(skip=1, limit=1)
+    assert len(clients) == 1
+    
+    # Test name filter
+    clients = await client_repository.find_all(name="Another")
+    assert len(clients) == 1
+    assert clients[0]["name"] == "Another Test Client"
+    
+    # Test active filter
+    clients = await client_repository.find_all(active=False)
+    assert len(clients) == 1
+    assert clients[0]["name"] == "Test Client 2"
 
 
 @pytest.mark.asyncio
-async def test_find_by_id(cliente_repository: ClienteRepository, sample_clientes):
-    """Test finding a cliente by ID."""
-    # Arrange
-    id = sample_clientes[0]["_id"]
+async def test_find_by_id(client_repository: ClientRepository, sample_clients):
+    """Test finding a client by ID."""
+    # Get a client by ID
+    client_id = sample_clients[0]["_id"]
+    client = await client_repository.find_by_id(client_id)
+    assert client["name"] == "Test Client 1"
     
-    # Act
-    result = await cliente_repository.find_by_id(id)
+    # Test with string ID
+    client = await client_repository.find_by_id(str(client_id))
+    assert client["name"] == "Test Client 1"
     
-    # Assert
-    assert result["_id"] == id
-    assert result["nome"] == "John Doe"
+    # Test with invalid ID
+    with pytest.raises(NotFoundError):
+        await client_repository.find_by_id("invalid_id")
+    
+    # Test with non-existent ID
+    with pytest.raises(NotFoundError):
+        await client_repository.find_by_id(ObjectId())
 
 
 @pytest.mark.asyncio
-async def test_find_by_id_not_found(cliente_repository: ClienteRepository):
-    """Test finding a cliente by ID when not found."""
-    # Arrange
-    non_existent_id = str(ObjectId())
+async def test_find_by_name(client_repository: ClientRepository, sample_clients):
+    """Test finding clients by name."""
+    # Get clients by name
+    clients = await client_repository.find_by_name("Test")
+    assert len(clients) == 2
     
-    # Act & Assert
-    with pytest.raises(NotFoundError) as excinfo:
-        await cliente_repository.find_by_id(non_existent_id)
-    
-    assert "Cliente não encontrado" in str(excinfo.value)
+    # Test with non-existent name
+    clients = await client_repository.find_by_name("NonExistent")
+    assert len(clients) == 0
 
 
 @pytest.mark.asyncio
-async def test_create(cliente_repository: ClienteRepository):
-    """Test creating a new cliente."""
-    # Arrange
-    new_cliente = ClienteCreate(
-        nome="New Cliente",
-        telefone="555-111-2222",
-        cidade="Curitiba",
-        uf="PR"
-    )
+async def test_create(client_repository: ClientRepository):
+    """Test creating a client."""
+    # Create a new client
+    new_client_data = {
+        "name": "New Test Client",
+        "document_id": "444.555.666-77",
+        "active": True,
+        "contact": {
+            "phone": "555-444-5555",
+            "email": "new@example.com",
+        },
+        "address": {
+            "street": "101 New St",
+            "city": "New City",
+            "state": "NC",
+            "zip_code": "54321",
+            "country": "New Country",
+        },
+    }
     
-    # Act
-    result = await cliente_repository.create(new_cliente)
+    created_client = await client_repository.create(new_client_data)
+    assert created_client["name"] == "New Test Client"
+    assert "_id" in created_client
+    assert "created_at" in created_client
+    assert "updated_at" in created_client
     
-    # Assert
-    assert result["nome"] == "New Cliente"
-    assert result["telefone"] == "555-111-2222"
-    assert result["cidade"] == "Curitiba"
-    assert result["uf"] == "PR"
-    assert "_id" in result
+    # Test duplicate document_id
+    with pytest.raises(DuplicateError):
+        await client_repository.create(new_client_data)
 
 
 @pytest.mark.asyncio
-async def test_update(cliente_repository: ClienteRepository, sample_clientes):
-    """Test updating a cliente."""
-    # Arrange
-    id = sample_clientes[0]["_id"]
-    update_data = ClienteUpdate(
-        nome="Updated Name",
-        telefone="555-999-8888"
-    )
+async def test_update(client_repository: ClientRepository, sample_clients):
+    """Test updating a client."""
+    client_id = sample_clients[0]["_id"]
     
-    # Act
-    result = await cliente_repository.update(id, update_data)
+    # Update a client
+    update_data = {
+        "name": "Updated Test Client",
+        "notes": "Updated notes",
+    }
     
-    # Assert
-    assert result["_id"] == id
-    assert result["nome"] == "Updated Name"
-    assert result["telefone"] == "555-999-8888"
-    assert result["cidade"] == "São Paulo"  # Unchanged field
+    updated_client = await client_repository.update(client_id, update_data)
+    assert updated_client["name"] == "Updated Test Client"
+    assert updated_client["notes"] == "Updated notes"
+    assert updated_client["document_id"] == sample_clients[0]["document_id"]
+    
+    # Test with invalid ID
+    with pytest.raises(NotFoundError):
+        await client_repository.update("invalid_id", update_data)
+    
+    # Test with non-existent ID
+    with pytest.raises(NotFoundError):
+        await client_repository.update(ObjectId(), update_data)
+    
+    # Test with empty update data
+    with pytest.raises(ValueError):
+        await client_repository.update(client_id, {})
 
 
 @pytest.mark.asyncio
-async def test_update_not_found(cliente_repository: ClienteRepository):
-    """Test updating a cliente when not found."""
-    # Arrange
-    non_existent_id = str(ObjectId())
-    update_data = ClienteUpdate(nome="Updated Name")
+async def test_delete(client_repository: ClientRepository, sample_clients):
+    """Test deleting a client."""
+    client_id = sample_clients[0]["_id"]
     
-    # Act & Assert
-    with pytest.raises(NotFoundError) as excinfo:
-        await cliente_repository.update(non_existent_id, update_data)
-    
-    assert "Cliente não encontrado" in str(excinfo.value)
-
-
-@pytest.mark.asyncio
-async def test_delete(cliente_repository: ClienteRepository, sample_clientes):
-    """Test deleting a cliente."""
-    # Arrange
-    id = sample_clientes[0]["_id"]
-    
-    # Act
-    result = await cliente_repository.delete(id)
-    
-    # Assert
+    # Delete a client
+    result = await client_repository.delete(client_id)
     assert result is True
     
-    # Verify it's deleted
+    # Verify the client was deleted
     with pytest.raises(NotFoundError):
-        await cliente_repository.find_by_id(id)
+        await client_repository.find_by_id(client_id)
+    
+    # Test with invalid ID
+    with pytest.raises(NotFoundError):
+        await client_repository.delete("invalid_id")
+    
+    # Test with non-existent ID
+    with pytest.raises(NotFoundError):
+        await client_repository.delete(ObjectId())
 
 
 @pytest.mark.asyncio
-async def test_delete_not_found(cliente_repository: ClienteRepository):
-    """Test deleting a cliente when not found."""
-    # Arrange
-    non_existent_id = str(ObjectId())
+async def test_count(client_repository: ClientRepository, sample_clients):
+    """Test counting clients."""
+    # Count all clients
+    count = await client_repository.count()
+    assert count == 3
     
-    # Act & Assert
-    with pytest.raises(NotFoundError) as excinfo:
-        await cliente_repository.delete(non_existent_id)
+    # Test name filter
+    count = await client_repository.count(name="Another")
+    assert count == 1
     
-    assert "Cliente não encontrado" in str(excinfo.value)
-
-
-@pytest.mark.asyncio
-async def test_find_by_nome(cliente_repository: ClienteRepository, sample_clientes):
-    """Test finding clientes by nome (partial match)."""
-    # Act
-    result = await cliente_repository.find_by_nome("Jo")
+    # Test active filter
+    count = await client_repository.count(active=False)
+    assert count == 1
     
-    # Assert
-    assert len(result) == 2  # Both John Doe and Bob Johnson
-    assert any(cliente["nome"] == "John Doe" for cliente in result)
-    assert any(cliente["nome"] == "Bob Johnson" for cliente in result)
-
-
-@pytest.mark.asyncio
-async def test_count(cliente_repository: ClienteRepository, sample_clientes):
-    """Test counting total clientes."""
-    # Act
-    result = await cliente_repository.count()
-    
-    # Assert
-    assert result == 3
+    # Test combined filters
+    count = await client_repository.count(name="Test", active=True)
+    assert count == 1

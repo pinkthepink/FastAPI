@@ -1,42 +1,31 @@
-import os
-from pydantic_settings import BaseSettings
-from dotenv import load_dotenv
-from typing import Optional, List
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-# Load environment variables from .env file
-load_dotenv()
 
 class Settings(BaseSettings):
-    # API settings
-    API_V1_STR: str = "/api"
-    PROJECT_NAME: str = "Petshop API"
-    
-    # Environment settings
-    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
-    PORT: int = int(os.getenv("PORT", "8000"))
-    
+    """Application settings."""
+
     # MongoDB settings
-    MONGODB_URI: str = os.getenv("MONGODB_URI", "mongodb://localhost:27017/petshop")
-    MONGODB_TEST_URI: str = os.getenv("MONGODB_TEST_URI", "mongodb://localhost:27017/petshop-test")
-    
-    # JWT Auth settings
-    JWT_SECRET: str = os.getenv("JWT_SECRET", "your_secret_key")
-    JWT_ALGORITHM: str = os.getenv("JWT_ALGORITHM", "HS256")
-    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("JWT_ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
-    
-    # CORS
-    CORS_ORIGINS: List[str] = ["*"]  # In production, this should be limited
-    
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
+    mongodb_uri: str = Field(..., alias="MONGODB_URI")
+    mongodb_db_name: str = Field(..., alias="MONGODB_DB_NAME")
+
+    # API settings
+    api_v1_str: str = Field("/api/v1", alias="API_V1_STR")
+    server_port: int = Field(8000, alias="SERVER_PORT")
+    debug: bool = Field(False, alias="DEBUG")
+
+    # Security settings
+    secret_key: str = Field(..., alias="SECRET_KEY")
+
+    # Application name and description
+    title: str = "Client Management API"
+    description: str = "A REST API for client management using FastAPI with async operations"
+    version: str = "0.1.0"
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        case_sensitive=True,
+    )
 
 
-# Create global settings instance
 settings = Settings()
-
-# Set the database URI based on environment
-def get_mongodb_uri() -> str:
-    if settings.ENVIRONMENT == "test":
-        return settings.MONGODB_TEST_URI
-    return settings.MONGODB_URI

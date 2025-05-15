@@ -1,15 +1,30 @@
 from fastapi import Depends
-from pymongo.collection import Collection
+from motor.motor_asyncio import AsyncIOMotorCollection
 
 from app.database.mongodb import get_collection
-from app.repositories.cliente_repository import ClienteRepository
+from app.repositories.cliente_repository import ClientRepository
 
 
-async def get_cliente_collection() -> Collection:
-    """Get the Cliente collection."""
-    return await get_collection("clientes")
+async def get_client_collection() -> AsyncIOMotorCollection:
+    """
+    Get the clients collection from the database.
+    
+    Returns:
+        AsyncIOMotorCollection: The clients collection
+    """
+    return get_collection("clients")
 
 
-async def get_cliente_repository(collection: Collection = Depends(get_cliente_collection)) -> ClienteRepository:
-    """Get the Cliente repository."""
-    return ClienteRepository(collection)
+async def get_client_repository(
+    collection: AsyncIOMotorCollection = Depends(get_client_collection),
+) -> ClientRepository:
+    """
+    Get the client repository instance.
+    
+    Args:
+        collection: The clients collection dependency
+        
+    Returns:
+        ClientRepository: The client repository instance
+    """
+    return ClientRepository(collection)
