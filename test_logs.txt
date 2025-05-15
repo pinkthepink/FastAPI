@@ -1,0 +1,1472 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.7, pytest-8.3.5, pluggy-1.5.0
+rootdir: /home/pedro-michel-nikolaides/Documents/Github/FastAPI
+plugins: asyncio-0.26.0, anyio-4.9.0
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 14 items
+
+tests/api/test_clientes.py EEFEEEE                                       [ 50%]
+tests/repositories/test_cliente_repository.py EEEEEEE                    [100%]
+
+==================================== ERRORS ====================================
+_____________________ ERROR at setup of test_list_clients ______________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_list_clients>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x7cb8872c1b20>
+context = <_contextvars.Context object at 0x7cb887212480>
+setup_task = <Task finished name='Task-4' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined ...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-4' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:77: RuntimeError
+______________ ERROR at setup of test_list_clients_with_filtering ______________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_list_clients_with_filtering>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x7cb884f7ce00>
+context = <_contextvars.Context object at 0x7cb884d2b2c0>
+setup_task = <Task finished name='Task-8' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined ...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-8' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:77: RuntimeError
+______________________ ERROR at setup of test_get_client _______________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_get_client>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x7cb884d3dda0>
+context = <_contextvars.Context object at 0x7cb887248c80>
+setup_task = <Task finished name='Task-16' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-16' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:77: RuntimeError
+_____________________ ERROR at setup of test_update_client _____________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_update_client>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x7cb884d3fba0>
+context = <_contextvars.Context object at 0x7cb884d76200>
+setup_task = <Task finished name='Task-20' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-20' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:77: RuntimeError
+_____________________ ERROR at setup of test_delete_client _____________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_delete_client>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x7cb884fb9c60>
+context = <_contextvars.Context object at 0x7cb884a67b40>
+setup_task = <Task finished name='Task-24' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-24' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:77: RuntimeError
+_____________________ ERROR at setup of test_count_clients _____________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_count_clients>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x7cb884fbbd80>
+context = <_contextvars.Context object at 0x7cb884aa0400>
+setup_task = <Task finished name='Task-28' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-28' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:77: RuntimeError
+_______________________ ERROR at setup of test_find_all ________________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_find_all>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x7cb884fb9b20>
+context = <_contextvars.Context object at 0x7cb884a67b40>
+setup_task = <Task finished name='Task-30' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-30' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:77: RuntimeError
+______________________ ERROR at setup of test_find_by_id _______________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_find_by_id>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x7cb884fb9300>
+context = <_contextvars.Context object at 0x7cb884a85840>
+setup_task = <Task finished name='Task-31' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-31' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:77: RuntimeError
+_____________________ ERROR at setup of test_find_by_name ______________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_find_by_name>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x7cb884fb8f40>
+context = <_contextvars.Context object at 0x7cb884ac6840>
+setup_task = <Task finished name='Task-32' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-32' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:77: RuntimeError
+________________________ ERROR at setup of test_create _________________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_create>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x7cb884d3e3e0>
+context = <_contextvars.Context object at 0x7cb8872c5940>
+setup_task = <Task finished name='Task-33' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-33' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:77: RuntimeError
+________________________ ERROR at setup of test_update _________________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_update>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x7cb884fb8540>
+context = <_contextvars.Context object at 0x7cb884a85840>
+setup_task = <Task finished name='Task-34' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-34' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:77: RuntimeError
+________________________ ERROR at setup of test_delete _________________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_delete>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x7cb884d3e7a0>
+context = <_contextvars.Context object at 0x7cb884a67b40>
+setup_task = <Task finished name='Task-35' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-35' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:77: RuntimeError
+_________________________ ERROR at setup of test_count _________________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_count>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x7cb884d3e660>
+context = <_contextvars.Context object at 0x7cb884de54c0>
+setup_task = <Task finished name='Task-36' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-36' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:77: RuntimeError
+=================================== FAILURES ===================================
+______________________________ test_create_client ______________________________
+
+    @contextlib.contextmanager
+    def map_httpcore_exceptions() -> typing.Iterator[None]:
+        global HTTPCORE_EXC_MAP
+        if len(HTTPCORE_EXC_MAP) == 0:
+            HTTPCORE_EXC_MAP = _load_httpcore_exceptions()
+        try:
+>           yield
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpx/_transports/default.py:101: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpx/_transports/default.py:394: in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py:256: in handle_async_request
+    raise exc from None
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py:236: in handle_async_request
+    response = await connection.handle_async_request(
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpcore/_async/connection.py:101: in handle_async_request
+    raise exc
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpcore/_async/connection.py:78: in handle_async_request
+    stream = await self._connect(request)
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpcore/_async/connection.py:124: in _connect
+    stream = await self._network_backend.connect_tcp(**kwargs)
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpcore/_backends/auto.py:31: in connect_tcp
+    return await self._backend.connect_tcp(
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpcore/_backends/anyio.py:113: in connect_tcp
+    with map_exceptions(exc_map):
+../../../anaconda3/lib/python3.12/contextlib.py:158: in __exit__
+    self.gen.throw(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+map = {<class 'TimeoutError'>: <class 'httpcore.ConnectTimeout'>, <class 'OSError'>: <class 'httpcore.ConnectError'>, <class 'anyio.BrokenResourceError'>: <class 'httpcore.ConnectError'>}
+
+    @contextlib.contextmanager
+    def map_exceptions(map: ExceptionMapping) -> typing.Iterator[None]:
+        try:
+            yield
+        except Exception as exc:  # noqa: PIE786
+            for from_exc, to_exc in map.items():
+                if isinstance(exc, from_exc):
+>                   raise to_exc(exc) from exc
+E                   httpcore.ConnectError: [Errno -3] Temporary failure in name resolution
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpcore/_exceptions.py:14: ConnectError
+
+The above exception was the direct cause of the following exception:
+
+async_client = <httpx.AsyncClient object at 0x7cb884f3da60>
+
+    @pytest.mark.asyncio
+    async def test_create_client(async_client: AsyncClient):
+        """Test creating a client."""
+        new_client_data = {
+            "name": "API Test Client",
+            "document_id": "999.888.777-66",
+            "active": True,
+            "contact": {
+                "phone": "555-999-8888",
+                "email": "api_test@example.com",
+            },
+            "address": {
+                "street": "202 API St",
+                "city": "API City",
+                "state": "AP",
+                "zip_code": "12345",
+                "country": "API Country",
+            },
+            "notes": "API test client notes",
+        }
+    
+>       response = await async_client.post(
+            f"{settings.api_v1_str}/clients/", json=new_client_data
+        )
+
+tests/api/test_clientes.py:76: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpx/_client.py:1859: in post
+    return await self.request(
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpx/_client.py:1540: in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpx/_client.py:1629: in send
+    response = await self._send_handling_auth(
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpx/_client.py:1657: in _send_handling_auth
+    response = await self._send_handling_redirects(
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpx/_client.py:1694: in _send_handling_redirects
+    response = await self._send_single_request(request)
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpx/_client.py:1730: in _send_single_request
+    response = await transport.handle_async_request(request)
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpx/_transports/default.py:393: in handle_async_request
+    with map_httpcore_exceptions():
+../../../anaconda3/lib/python3.12/contextlib.py:158: in __exit__
+    self.gen.throw(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @contextlib.contextmanager
+    def map_httpcore_exceptions() -> typing.Iterator[None]:
+        global HTTPCORE_EXC_MAP
+        if len(HTTPCORE_EXC_MAP) == 0:
+            HTTPCORE_EXC_MAP = _load_httpcore_exceptions()
+        try:
+            yield
+        except Exception as exc:
+            mapped_exc = None
+    
+            for from_exc, to_exc in HTTPCORE_EXC_MAP.items():
+                if not isinstance(exc, from_exc):
+                    continue
+                # We want to map to the most specific exception we can find.
+                # Eg if `exc` is an `httpcore.ReadTimeout`, we want to map to
+                # `httpx.ReadTimeout`, not just `httpx.TimeoutException`.
+                if mapped_exc is None or issubclass(to_exc, mapped_exc):
+                    mapped_exc = to_exc
+    
+            if mapped_exc is None:  # pragma: no cover
+                raise
+    
+            message = str(exc)
+>           raise mapped_exc(message) from exc
+E           httpx.ConnectError: [Errno -3] Temporary failure in name resolution
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpx/_transports/default.py:118: ConnectError
+=============================== warnings summary ===============================
+tests/api/test_clientes.py: 7 warnings
+tests/repositories/test_cliente_repository.py: 7 warnings
+  /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:884: DeprecationWarning: The event_loop fixture provided by pytest-asyncio has been redefined in
+  /home/pedro-michel-nikolaides/Documents/Github/FastAPI/tests/conftest.py:29
+  Replacing the event_loop fixture with a custom implementation is deprecated
+  and will lead to errors in the future.
+  If you want to request an asyncio event loop with a scope other than function
+  scope, use the "loop_scope" argument to the asyncio mark when marking the tests.
+  If you want to return different types of event loops, use the event_loop_policy
+  fixture.
+  
+    warnings.warn(
+
+tests/repositories/test_cliente_repository.py::test_count
+  /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:788: DeprecationWarning: pytest-asyncio detected an unclosed event loop when tearing down the event_loop
+  fixture: <_UnixSelectorEventLoop running=False closed=False debug=False>
+  pytest-asyncio will close the event loop for you, but future versions of the
+  library will no longer do so. In order to ensure compatibility with future
+  versions, please make sure that:
+      1. Any custom "event_loop" fixture properly closes the loop after yielding it
+      2. The scopes of your custom "event_loop" fixtures do not overlap
+      3. Your code does not modify the event loop in async fixtures or tests
+  
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/api/test_clientes.py::test_create_client - httpx.ConnectError: [...
+ERROR tests/api/test_clientes.py::test_list_clients - RuntimeError: Task <Tas...
+ERROR tests/api/test_clientes.py::test_list_clients_with_filtering - RuntimeE...
+ERROR tests/api/test_clientes.py::test_get_client - RuntimeError: Task <Task ...
+ERROR tests/api/test_clientes.py::test_update_client - RuntimeError: Task <Ta...
+ERROR tests/api/test_clientes.py::test_delete_client - RuntimeError: Task <Ta...
+ERROR tests/api/test_clientes.py::test_count_clients - RuntimeError: Task <Ta...
+ERROR tests/repositories/test_cliente_repository.py::test_find_all - RuntimeE...
+ERROR tests/repositories/test_cliente_repository.py::test_find_by_id - Runtim...
+ERROR tests/repositories/test_cliente_repository.py::test_find_by_name - Runt...
+ERROR tests/repositories/test_cliente_repository.py::test_create - RuntimeErr...
+ERROR tests/repositories/test_cliente_repository.py::test_update - RuntimeErr...
+ERROR tests/repositories/test_cliente_repository.py::test_delete - RuntimeErr...
+ERROR tests/repositories/test_cliente_repository.py::test_count - RuntimeErro...
+================== 1 failed, 15 warnings, 13 errors in 0.62s ===================
+============================= test session starts ==============================
+platform linux -- Python 3.12.7, pytest-8.3.5, pluggy-1.5.0
+rootdir: /home/pedro-michel-nikolaides/Documents/Github/FastAPI
+plugins: asyncio-0.26.0, anyio-4.9.0
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 14 items
+
+tests/api/test_clientes.py EEFEEEE                                       [ 50%]
+tests/repositories/test_cliente_repository.py EEEEEEE                    [100%]
+
+==================================== ERRORS ====================================
+_____________________ ERROR at setup of test_list_clients ______________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_list_clients>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x78dd46089d00>
+context = <_contextvars.Context object at 0x78dd462bb740>
+setup_task = <Task finished name='Task-4' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined ...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-4' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:75: RuntimeError
+______________ ERROR at setup of test_list_clients_with_filtering ______________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_list_clients_with_filtering>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x78dd44784d60>
+context = <_contextvars.Context object at 0x78dd44537cc0>
+setup_task = <Task finished name='Task-8' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined ...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-8' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:75: RuntimeError
+______________________ ERROR at setup of test_get_client _______________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_get_client>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x78dd44669d00>
+context = <_contextvars.Context object at 0x78dd478eba40>
+setup_task = <Task finished name='Task-16' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-16' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:75: RuntimeError
+_____________________ ERROR at setup of test_update_client _____________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_update_client>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x78dd4466bb00>
+context = <_contextvars.Context object at 0x78dd4449fdc0>
+setup_task = <Task finished name='Task-20' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-20' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:75: RuntimeError
+_____________________ ERROR at setup of test_delete_client _____________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_delete_client>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x78dd4463dbc0>
+context = <_contextvars.Context object at 0x78dd44433fc0>
+setup_task = <Task finished name='Task-24' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-24' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:75: RuntimeError
+_____________________ ERROR at setup of test_count_clients _____________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_count_clients>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x78dd4463fce0>
+context = <_contextvars.Context object at 0x78dd44670400>
+setup_task = <Task finished name='Task-28' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-28' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:75: RuntimeError
+_______________________ ERROR at setup of test_find_all ________________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_find_all>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x78dd4463db20>
+context = <_contextvars.Context object at 0x78dd44433fc0>
+setup_task = <Task finished name='Task-30' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-30' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:75: RuntimeError
+______________________ ERROR at setup of test_find_by_id _______________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_find_by_id>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x78dd4463ca40>
+context = <_contextvars.Context object at 0x78dd442d74c0>
+setup_task = <Task finished name='Task-31' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-31' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:75: RuntimeError
+_____________________ ERROR at setup of test_find_by_name ______________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_find_by_name>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x78dd4463d760>
+context = <_contextvars.Context object at 0x78dd444338c0>
+setup_task = <Task finished name='Task-32' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-32' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:75: RuntimeError
+________________________ ERROR at setup of test_create _________________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_create>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x78dd4466bf60>
+context = <_contextvars.Context object at 0x78dd4468f3c0>
+setup_task = <Task finished name='Task-33' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-33' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:75: RuntimeError
+________________________ ERROR at setup of test_update _________________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_update>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x78dd4463c360>
+context = <_contextvars.Context object at 0x78dd444338c0>
+setup_task = <Task finished name='Task-34' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-34' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:75: RuntimeError
+________________________ ERROR at setup of test_delete _________________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_delete>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x78dd4466afc0>
+context = <_contextvars.Context object at 0x78dd4468f280>
+setup_task = <Task finished name='Task-35' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-35' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:75: RuntimeError
+_________________________ ERROR at setup of test_count _________________________
+
+request = <SubRequest 'clean_test_db' for <Coroutine test_count>>
+kwargs = {'mongo_client': AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect..., minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))}
+event_loop_fixture_id = 'event_loop'
+setup = <function _wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup at 0x78dd4466aac0>
+context = <_contextvars.Context object at 0x78dd4436fec0>
+setup_task = <Task finished name='Task-36' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() done, defined...el() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop")>
+
+    @functools.wraps(fixture)
+    def _async_fixture_wrapper(request: FixtureRequest, **kwargs: Any):
+        func = _perhaps_rebind_fixture_func(fixture, request.instance)
+        event_loop_fixture_id = _get_event_loop_fixture_id_for_async_fixture(
+            request, func
+        )
+        event_loop = request.getfixturevalue(event_loop_fixture_id)
+        kwargs.pop(event_loop_fixture_id, None)
+    
+        async def setup():
+            res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+            return res
+    
+        context = contextvars.copy_context()
+        setup_task = _create_task_in_context(event_loop, setup(), context)
+>       result = event_loop.run_until_complete(setup_task)
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:391: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../anaconda3/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386: in setup
+    res = await func(**_add_kwargs(func, kwargs, event_loop, request))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mongo_client = AsyncIOMotorClient(MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=False, maxpoolsi...0, minpoolsize=1, serverselectiontimeoutms=5000, driver=DriverInfo(name='Motor', version='3.7.1', platform='asyncio')))
+
+    @pytest_asyncio.fixture(scope="function")
+    async def clean_test_db(mongo_client) -> None:
+        """Clean the test database before each test."""
+>       await mongo_client.drop_database(TEST_MONGODB_DB_NAME)
+E       RuntimeError: Task <Task pending name='Task-36' coro=<_wrap_async_fixture.<locals>._async_fixture_wrapper.<locals>.setup() running at /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:386> cb=[_run_until_complete_cb() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/base_events.py:182]> got Future <Future pending cb=[_chain_future.<locals>._call_check_cancel() at /home/pedro-michel-nikolaides/anaconda3/lib/python3.12/asyncio/futures.py:391]> attached to a different loop
+
+tests/conftest.py:75: RuntimeError
+=================================== FAILURES ===================================
+______________________________ test_create_client ______________________________
+
+    @contextlib.contextmanager
+    def map_httpcore_exceptions() -> typing.Iterator[None]:
+        global HTTPCORE_EXC_MAP
+        if len(HTTPCORE_EXC_MAP) == 0:
+            HTTPCORE_EXC_MAP = _load_httpcore_exceptions()
+        try:
+>           yield
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpx/_transports/default.py:101: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpx/_transports/default.py:394: in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py:256: in handle_async_request
+    raise exc from None
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py:236: in handle_async_request
+    response = await connection.handle_async_request(
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpcore/_async/connection.py:101: in handle_async_request
+    raise exc
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpcore/_async/connection.py:78: in handle_async_request
+    stream = await self._connect(request)
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpcore/_async/connection.py:124: in _connect
+    stream = await self._network_backend.connect_tcp(**kwargs)
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpcore/_backends/auto.py:31: in connect_tcp
+    return await self._backend.connect_tcp(
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpcore/_backends/anyio.py:113: in connect_tcp
+    with map_exceptions(exc_map):
+../../../anaconda3/lib/python3.12/contextlib.py:158: in __exit__
+    self.gen.throw(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+map = {<class 'TimeoutError'>: <class 'httpcore.ConnectTimeout'>, <class 'OSError'>: <class 'httpcore.ConnectError'>, <class 'anyio.BrokenResourceError'>: <class 'httpcore.ConnectError'>}
+
+    @contextlib.contextmanager
+    def map_exceptions(map: ExceptionMapping) -> typing.Iterator[None]:
+        try:
+            yield
+        except Exception as exc:  # noqa: PIE786
+            for from_exc, to_exc in map.items():
+                if isinstance(exc, from_exc):
+>                   raise to_exc(exc) from exc
+E                   httpcore.ConnectError: [Errno -3] Temporary failure in name resolution
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpcore/_exceptions.py:14: ConnectError
+
+The above exception was the direct cause of the following exception:
+
+async_client = <httpx.AsyncClient object at 0x78dd44741880>
+
+    @pytest.mark.asyncio
+    async def test_create_client(async_client: AsyncClient):
+        """Test creating a client."""
+        new_client_data = {
+            "name": "API Test Client",
+            "document_id": "999.888.777-66",
+            "active": True,
+            "contact": {
+                "phone": "555-999-8888",
+                "email": "api_test@example.com",
+            },
+            "address": {
+                "street": "202 API St",
+                "city": "API City",
+                "state": "AP",
+                "zip_code": "12345",
+                "country": "API Country",
+            },
+            "notes": "API test client notes",
+        }
+    
+>       response = await async_client.post(
+            f"{settings.api_v1_str}/clients/", json=new_client_data
+        )
+
+tests/api/test_clientes.py:76: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpx/_client.py:1859: in post
+    return await self.request(
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpx/_client.py:1540: in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpx/_client.py:1629: in send
+    response = await self._send_handling_auth(
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpx/_client.py:1657: in _send_handling_auth
+    response = await self._send_handling_redirects(
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpx/_client.py:1694: in _send_handling_redirects
+    response = await self._send_single_request(request)
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpx/_client.py:1730: in _send_single_request
+    response = await transport.handle_async_request(request)
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpx/_transports/default.py:393: in handle_async_request
+    with map_httpcore_exceptions():
+../../../anaconda3/lib/python3.12/contextlib.py:158: in __exit__
+    self.gen.throw(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @contextlib.contextmanager
+    def map_httpcore_exceptions() -> typing.Iterator[None]:
+        global HTTPCORE_EXC_MAP
+        if len(HTTPCORE_EXC_MAP) == 0:
+            HTTPCORE_EXC_MAP = _load_httpcore_exceptions()
+        try:
+            yield
+        except Exception as exc:
+            mapped_exc = None
+    
+            for from_exc, to_exc in HTTPCORE_EXC_MAP.items():
+                if not isinstance(exc, from_exc):
+                    continue
+                # We want to map to the most specific exception we can find.
+                # Eg if `exc` is an `httpcore.ReadTimeout`, we want to map to
+                # `httpx.ReadTimeout`, not just `httpx.TimeoutException`.
+                if mapped_exc is None or issubclass(to_exc, mapped_exc):
+                    mapped_exc = to_exc
+    
+            if mapped_exc is None:  # pragma: no cover
+                raise
+    
+            message = str(exc)
+>           raise mapped_exc(message) from exc
+E           httpx.ConnectError: [Errno -3] Temporary failure in name resolution
+
+../petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/httpx/_transports/default.py:118: ConnectError
+=============================== warnings summary ===============================
+tests/api/test_clientes.py: 7 warnings
+tests/repositories/test_cliente_repository.py: 7 warnings
+  /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:884: DeprecationWarning: The event_loop fixture provided by pytest-asyncio has been redefined in
+  /home/pedro-michel-nikolaides/Documents/Github/FastAPI/tests/conftest.py:28
+  Replacing the event_loop fixture with a custom implementation is deprecated
+  and will lead to errors in the future.
+  If you want to request an asyncio event loop with a scope other than function
+  scope, use the "loop_scope" argument to the asyncio mark when marking the tests.
+  If you want to return different types of event loops, use the event_loop_policy
+  fixture.
+  
+    warnings.warn(
+
+tests/repositories/test_cliente_repository.py::test_count
+  /home/pedro-michel-nikolaides/Documents/Github/petshop-gestao-v2/python/.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:788: DeprecationWarning: pytest-asyncio detected an unclosed event loop when tearing down the event_loop
+  fixture: <_UnixSelectorEventLoop running=False closed=False debug=False>
+  pytest-asyncio will close the event loop for you, but future versions of the
+  library will no longer do so. In order to ensure compatibility with future
+  versions, please make sure that:
+      1. Any custom "event_loop" fixture properly closes the loop after yielding it
+      2. The scopes of your custom "event_loop" fixtures do not overlap
+      3. Your code does not modify the event loop in async fixtures or tests
+  
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/api/test_clientes.py::test_create_client - httpx.ConnectError: [...
+ERROR tests/api/test_clientes.py::test_list_clients - RuntimeError: Task <Tas...
+ERROR tests/api/test_clientes.py::test_list_clients_with_filtering - RuntimeE...
+ERROR tests/api/test_clientes.py::test_get_client - RuntimeError: Task <Task ...
+ERROR tests/api/test_clientes.py::test_update_client - RuntimeError: Task <Ta...
+ERROR tests/api/test_clientes.py::test_delete_client - RuntimeError: Task <Ta...
+ERROR tests/api/test_clientes.py::test_count_clients - RuntimeError: Task <Ta...
+ERROR tests/repositories/test_cliente_repository.py::test_find_all - RuntimeE...
+ERROR tests/repositories/test_cliente_repository.py::test_find_by_id - Runtim...
+ERROR tests/repositories/test_cliente_repository.py::test_find_by_name - Runt...
+ERROR tests/repositories/test_cliente_repository.py::test_create - RuntimeErr...
+ERROR tests/repositories/test_cliente_repository.py::test_update - RuntimeErr...
+ERROR tests/repositories/test_cliente_repository.py::test_delete - RuntimeErr...
+ERROR tests/repositories/test_cliente_repository.py::test_count - RuntimeErro...
+================== 1 failed, 15 warnings, 13 errors in 0.56s ===================

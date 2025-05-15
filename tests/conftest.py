@@ -25,9 +25,8 @@ TEST_MONGODB_DB_NAME = f"test_{settings.mongodb_db_name}"
 settings.mongodb_uri = TEST_MONGODB_URI
 settings.mongodb_db_name = TEST_MONGODB_DB_NAME
 
-
-@pytest.fixture(scope="session")
-def event_loop() -> Generator:
+@pytest.fixture(scope="function")
+def event_loop():
     """Create an instance of the default event loop for each test case."""
     policy = asyncio.get_event_loop_policy()
     loop = policy.new_event_loop()
@@ -35,11 +34,9 @@ def event_loop() -> Generator:
     yield loop
     loop.close()
 
-
-@pytest_asyncio.fixture(scope="session")
+@pytest_asyncio.fixture(scope="function")
 async def mongo_client() -> AsyncGenerator[AsyncIOMotorClient, None]:
     """Create a MongoDB client for testing."""
-    import sys
     # Initialize MongoDB client
     client = AsyncIOMotorClient(
         TEST_MONGODB_URI,
@@ -48,7 +45,6 @@ async def mongo_client() -> AsyncGenerator[AsyncIOMotorClient, None]:
         serverSelectionTimeoutMS=5000,
     )
     
-    # Check if MongoDB is actually running
     try:
         # Ping the MongoDB server
         await client.admin.command("ping")
@@ -62,13 +58,8 @@ async def mongo_client() -> AsyncGenerator[AsyncIOMotorClient, None]:
         
         # Clean up database after tests
         await client.drop_database(TEST_MONGODB_DB_NAME)
+    finally:
         client.close()
-    except Exception as e:
-        print(f"\nERROR: Could not connect to MongoDB: {e}")
-        print("Is MongoDB running on your system?")
-        print("For running tests, you need MongoDB installed and running.")
-        print("Alternative: use pytest with --skip-mongo flag to skip tests requiring MongoDB.\n")
-        sys.exit(1)
 
 
 @pytest_asyncio.fixture(scope="function")
